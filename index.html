@@ -201,6 +201,7 @@ section { padding-block: clamp(48px, 8vw, 96px); scroll-margin-top: 64px; }
 .jcol b { font-family: var(--font-mono); font-size: 0.72rem; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--go-text); }
 .jcol span { color: var(--fg); font-size: 0.95rem; }
 .jpanel .btn { justify-self: start; }
+.sendrow { display: flex; align-items: center; gap: 12px 16px; flex-wrap: wrap; }
 .jctrl { display: flex; gap: 10px; justify-content: flex-end; }
 @media (max-width: 700px) { .jcols { grid-template-columns: 1fr; } .jpanel { min-height: 0; } .jlabel { font-size: 0.78rem; } }
 
@@ -239,7 +240,7 @@ legend { font-family: var(--font-display); font-size: 0.95rem; padding: 0; margi
 .type input:checked + .card { border-color: var(--accent); box-shadow: inset 0 0 0 1px var(--accent); }
 .type input:focus-visible + .card { outline: 2px solid var(--accent); outline-offset: 2px; }
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
-.field { display: grid; gap: 6px; min-width: 0; }
+.field { display: grid; gap: 6px; min-width: 0; align-content: start; }
 label, .label { font-size: 0.9rem; font-weight: 500; }
 input[type="text"], input[type="email"], input[type="number"], input[type="date"], select, textarea {
   width: 100%; font: inherit; color: var(--fg); background: var(--bg);
@@ -466,8 +467,12 @@ footer .mono { color: var(--muted); }
           <legend>About you</legend>
           <div class="row">
             <div class="field"><label for="f-name">Name</label><input id="f-name" name="Name" type="text" autocomplete="name"><div class="err" id="e-name" aria-live="polite"></div></div>
-            <div class="field"><label for="f-contact">Email or phone</label><input id="f-contact" name="Contact" type="text" autocomplete="email"><div class="err" id="e-contact" aria-live="polite"></div></div>
+            <div class="field"><label for="f-email">Email</label><input id="f-email" name="Email" type="email" autocomplete="email" inputmode="email"><div class="hint">We reply to this address.</div><div class="err" id="e-email" aria-live="polite"></div></div>
           </div>
+          <div class="row">
+            <div class="field"><label for="f-phone">Phone or WhatsApp <span class="hint">(optional)</span></label><input id="f-phone" name="Phone or WhatsApp" type="text" autocomplete="tel" inputmode="tel"></div>
+          </div>
+          <input type="checkbox" id="f-bot" name="botcheck" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0">
         </fieldset>
 
         <fieldset>
@@ -513,14 +518,15 @@ footer .mono { color: var(--muted); }
             <select id="f-budget" name="Budget"><option>Not sure yet</option><option>Under $50</option><option>$50 to $150</option><option>$150 to $500</option><option>$500 or more</option></select></div>
         </fieldset>
 
-        <div><button class="btn" type="submit">Create my brief</button></div>
+        <div class="sendrow"><button class="btn" type="submit" id="submit-btn">Send my brief</button><span class="hint">We only use your details to reply about your brief.</span></div>
 
         <div class="result" id="result" hidden aria-live="polite">
           <h3 id="result-title">Your brief</h3>
           <p id="result-note" class="hint"></p>
           <pre id="brief-text"></pre>
           <div class="actions">
-            <button type="button" class="btn small" id="copy-btn">Copy brief</button>
+            <a class="btn small" id="mailto-btn" href="#" hidden>Email us this brief</a>
+            <button type="button" class="btn ghost small" id="copy-btn">Copy brief</button>
             <span class="hint" id="copy-status" aria-live="polite"></span>
           </div>
         </div>
@@ -554,11 +560,13 @@ footer .mono { color: var(--muted); }
 /* ---- Edit these to make the site yours ---- */
 const CONFIG = {
   brand: 'Forge',
-  email: 'hello@forge.example',
+  email: 'forg3dprinter@gmail.com',
   currency: '$',
-  // Optional. Add a form service URL (for example a Formspree endpoint) to send requests
-  // from a live site. When empty, the page shows the brief for the visitor to copy.
-  formEndpoint: ''
+  // Briefs are sent to your email by Web3Forms (free). Get an access key at web3forms.com
+  // by entering the email above, then paste it here. Until then the form offers the
+  // visitor an "Email us this brief" button instead.
+  accessKey: '',
+  endpoint: 'https://api.web3forms.com/submit'
 };
 const SWATCHES = {
   ember:     { name: 'Ember',     back: '#FF7420' },
@@ -710,18 +718,19 @@ function orderProduct(id, colour) {
 function validate() {
   let ok = true;
   const t = currentType();
-  const name = $('#f-name').value.trim(), contact = $('#f-contact').value.trim(), desc = $('#f-desc').value.trim();
+  const name = $('#f-name').value.trim(), email = $('#f-email').value.trim(), desc = $('#f-desc').value.trim();
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   $('#e-name').textContent = name ? '' : 'Enter your name.';
-  $('#e-contact').textContent = contact ? '' : 'Enter an email address or phone number so we can reply.';
+  $('#e-email').textContent = emailOk ? '' : 'Enter a valid email address so we can reply.';
   const needDesc = t !== 'mahjong';
   $('#e-desc').textContent = (needDesc && desc.length < 10) ? 'Add a short description of what you need.' : '';
-  if (!name || !contact || (needDesc && desc.length < 10)) ok = false;
+  if (!name || !emailOk || (needDesc && desc.length < 10)) ok = false;
   return ok;
 }
 function buildBrief() {
   const t = currentType();
   const lines = ['Request type: ' + TYPES[t].label];
-  $$('#brief-form input:not([type="radio"]), #brief-form select, #brief-form textarea').forEach(function (c) {
+  $$('#brief-form input:not([type="radio"]):not([type="checkbox"]), #brief-form select, #brief-form textarea').forEach(function (c) {
     if (c.disabled) return;
     let v = c.value.trim();
     if (!v) return;
@@ -732,21 +741,54 @@ function buildBrief() {
   return lines.join('\n');
 }
 $('#brief-form').addEventListener('change', function (e) { if (e.target.name === 'type') syncType(); });
+function sendBrief(subject, name, email, text) {
+  const fd = new FormData();
+  fd.append('access_key', CONFIG.accessKey);
+  fd.append('subject', subject);
+  fd.append('from_name', 'Forge website');
+  fd.append('name', name);
+  fd.append('email', email);
+  fd.append('message', text);
+  fd.append('botcheck', '');
+  return fetch(CONFIG.endpoint, { method: 'POST', body: fd, headers: { 'Accept': 'application/json' } })
+    .then(function (r) { return r.json().catch(function () { return {}; }).then(function (j) { return r.ok && j.success !== false; }); });
+}
 $('#brief-form').addEventListener('submit', function (e) {
   e.preventDefault();
   if (!validate()) return;
+  const name = $('#f-name').value.trim(), email = $('#f-email').value.trim();
   const text = buildBrief();
-  const res = $('#result'), note = $('#result-note');
+  const subject = 'New Forge brief from ' + name + ' (' + TYPES[currentType()].label + ')';
+  const res = $('#result'), note = $('#result-note'), title = $('#result-title'), mail = $('#mailto-btn'), btn = $('#submit-btn');
   $('#brief-text').textContent = text;
   $('#copy-status').textContent = '';
+  mail.href = 'mailto:' + CONFIG.email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text + '\\n\\nReply to: ' + email);
+  const showMail = function (on) { mail.hidden = !on; };
+  const fallback = function (why) {
+    title.textContent = 'Your brief is ready';
+    note.textContent = why + ' Press "Email us this brief" to send it from your email app, or copy it and email it to ' + CONFIG.email + '.';
+    showMail(true);
+  };
   res.hidden = false;
-  if (CONFIG.formEndpoint) {
-    note.textContent = 'Sending your request...';
-    fetch(CONFIG.formEndpoint, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, body: JSON.stringify({ brief: text, contact: $('#f-contact').value.trim(), name: $('#f-name').value.trim() }) })
-      .then(function (r) { note.textContent = r.ok ? 'Request sent. Keep a copy of the brief below.' : 'The request did not send. Copy the brief and email it to ' + CONFIG.email + '.'; })
-      .catch(function () { note.textContent = 'The request did not send. Copy the brief and email it to ' + CONFIG.email + '.'; });
+  if ($('#f-bot').checked) { title.textContent = 'Brief sent'; note.textContent = 'Thanks. We will reply to ' + email + '.'; showMail(false); return; }
+  if (!CONFIG.accessKey) {
+    fallback('Online sending is not switched on yet.');
   } else {
-    note.textContent = 'Nothing has been sent yet. Copy this brief and email it to ' + CONFIG.email + '.';
+    title.textContent = 'Sending your brief';
+    note.textContent = 'One moment...';
+    showMail(false);
+    btn.disabled = true; btn.textContent = 'Sending...';
+    sendBrief(subject, name, email, text).then(function (ok) {
+      if (ok) {
+        title.textContent = 'Brief sent';
+        note.textContent = 'Thanks, ' + name + '. We have your brief and will reply to ' + email + '. Here is a copy for your records.';
+        $('#brief-form').reset(); syncType();
+      } else {
+        fallback('We could not send your brief from here.');
+      }
+    }).catch(function () {
+      fallback('We could not send your brief from here.');
+    }).then(function () { btn.disabled = false; btn.textContent = 'Send my brief'; });
   }
   res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
@@ -872,7 +914,7 @@ const STEPS = [
 })();
 
 /* ---- Boot ---- */
-$$('[data-email]').forEach(function (n) { n.textContent = CONFIG.email; });
+$$('[data-email]').forEach(function (n) { n.innerHTML = '<a href="mailto:' + esc(CONFIG.email) + '" style="color:inherit">' + esc(CONFIG.email) + '</a>'; });
 $$('[data-tile]').forEach(function (n) { n.innerHTML = tileSVG(Number(n.dataset.tile)); });
 renderShop();
 renderWork();
