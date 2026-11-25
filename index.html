@@ -2,15 +2,15 @@
 <script>try{var __t=localStorage.getItem("forge-theme");if(__t==="light"||__t==="dark")document.documentElement.setAttribute("data-theme",__t)}catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&family=JetBrains+Mono:wght@400;500&family=Unbounded:wght@500;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@400;600;700;800&display=swap">
 <style>
 /* Layout concept: a print-shop site in the Forge logo palette: logo orange, nozzle black and
    a pale peach, on warm white. Faint layer lines (the texture of FDM prints) sit behind the
    hero and shop stages. Orange marks every action, step and highlight. */
 :root {
-  --font-display: 'Unbounded', 'Arial Black', system-ui, sans-serif;
-  --font-body: 'DM Sans', system-ui, -apple-system, 'Segoe UI', sans-serif;
-  --font-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  --font-display: 'Fredoka', 'Nunito', ui-rounded, system-ui, sans-serif;
+  --font-body: 'Nunito', ui-rounded, system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-mono: 'Nunito', ui-rounded, system-ui, sans-serif;
   --bg: #FFFBF7;
   --surface: #FFFFFF;
   --fg: #17110D;
@@ -27,11 +27,16 @@
   --dot-a: #1E1713;
   --dot-b: #FF7420;
   --layer: rgba(184, 68, 10, 0.12);
-  --radius: 14px;
+  --radius: 22px;
+  --ink: #17110D;
+  --pop: #FFD84D;
+  --hl: #FFE27A;
+  --dots: rgba(255, 116, 32, 0.14);
 }
 :root[data-theme="dark"] {
   --bg: #14100D; --surface: #1F1914; --fg: #F6EEE7; --muted: #BDAC9F; --line: #3B2F27;
   --accent: #FF7420; --accent-text: #FF9A5C; --on-accent: #1A0E08; --go: #3CC495; --go-text: #6FE0B8; --on-go: #0B2A1E; --stage: #33231A; --layer: rgba(255, 154, 92, 0.12);
+  --ink: #F6EEE7; --hl: rgba(255, 216, 77, 0.35); --dots: rgba(255, 154, 92, 0.12);
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -323,6 +328,86 @@ input:focus, select:focus, textarea:focus { outline: 2px solid var(--accent); ou
 .faq p { color: var(--muted); margin-top: 10px; max-width: 60ch; }
 footer { border-top: 1px solid var(--line); padding-block: 32px calc(40px + env(safe-area-inset-bottom, 0px)); display: flex; flex-wrap: wrap; gap: 12px 32px; justify-content: space-between; color: var(--muted); font-size: 0.9rem; }
 footer .mono { color: var(--muted); }
+
+/* ---- Friendly layer: rounder, bouncier, a bit cheeky ---- */
+body { background-image: radial-gradient(var(--dots) 1.6px, transparent 1.7px); background-size: 28px 28px; }
+h1, h2, h3, legend { font-weight: 600; letter-spacing: 0; }
+.hero h1 { font-weight: 700; font-size: clamp(2.2rem, 5.4vw, 3.8rem); line-height: 1.08; }
+h2 { font-size: clamp(1.7rem, 3.8vw, 2.5rem); }
+.mono { font-weight: 700; letter-spacing: 0.01em; font-size: 0.85rem; }
+.lead { font-size: 1.12rem; }
+.hl { background: linear-gradient(transparent 58%, var(--hl) 58% 94%, transparent 94%); padding-inline: 0.12em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.kicker { display: block; width: fit-content; margin-bottom: 14px; font: 800 0.82rem/1 var(--font-body); padding: 7px 14px; border-radius: 999px; background: var(--pop); color: #17110D; border: 2px solid var(--ink); transform: rotate(-2deg); }
+.process-head .kicker, .shop-head .kicker, .work-title .kicker, .intro .kicker { margin-bottom: 0; }
+.btn { font-weight: 800; border: 2px solid var(--ink); box-shadow: 0 4px 0 var(--ink); }
+.btn:hover { filter: none; transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
+.btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+.btn.ghost { background: var(--surface); color: var(--fg); border-color: var(--ink); }
+.btn.ghost:hover { border-color: var(--ink); background: var(--stage); }
+.btn.small { box-shadow: 0 3px 0 var(--ink); }
+.btn:disabled { opacity: 0.55; transform: none; box-shadow: 0 2px 0 var(--ink); cursor: default; }
+.theme-btn, .arrow { border: 2px solid var(--ink); }
+.theme-btn:hover, .arrow:hover { border-color: var(--ink); background: var(--stage); }
+.brand:hover img { animation: wiggle .6s ease; }
+.nav a:not(.btn) { font-weight: 700; }
+.stage { border: 2px solid var(--ink); border-radius: 28px; }
+.hero > .stage { box-shadow: 6px 6px 0 var(--ink); transform: rotate(1.5deg); }
+.stage .cap { font-weight: 800; }
+.sticker { position: absolute; z-index: 3; right: 12px; top: 12px; transform: rotate(8deg); padding: 8px 14px; border-radius: 999px; background: var(--pop); color: #17110D; border: 2px solid var(--ink); font: 800 0.8rem/1.1 var(--font-body); box-shadow: 0 3px 0 var(--ink); }
+.hero .stage .t { animation: bob 4.2s ease-in-out infinite; }
+.hero .stage .t2 { animation-delay: -1.4s; } .hero .stage .t3 { animation-delay: -2.8s; }
+@keyframes bob { 50% { translate: 0 -9px; } }
+@keyframes wiggle { 0%, 100% { rotate: 0deg; } 25% { rotate: -6deg; } 75% { rotate: 6deg; } }
+@media (prefers-reduced-motion: reduce) { .hero .stage .t, .brand:hover img, .art.link:hover svg { animation: none; } }
+.specs { border: 2px dashed var(--line); border-radius: 22px; padding: 14px 20px; }
+.specs b { font-weight: 800; }
+.svc { border-top: 2px dashed var(--line); }
+.svc:last-child { border-bottom: 2px dashed var(--line); }
+.art { border: 2px solid var(--ink); border-radius: 26px; box-shadow: 4px 4px 0 var(--ink); }
+.svc:nth-of-type(odd) .art { transform: rotate(3deg); }
+.svc:nth-of-type(even) .art { transform: rotate(-3deg); }
+.art.link:hover { transform: rotate(0deg) translateY(-4px) scale(1.04); }
+.art.link:hover svg { animation: wiggle .6s ease; }
+.art-cta { border: 2px solid var(--ink); background: var(--pop); color: #17110D; font-weight: 800; }
+.chip { border: 2px solid var(--ink); color: #17110D; background: var(--surface); font-weight: 700; font-size: 0.78rem; }
+.chip:nth-child(3n+1) { background: var(--stage); } .chip:nth-child(3n+2) { background: var(--hl); }
+:root[data-theme="dark"] .chip { color: var(--fg); }
+.slide .ph { border: 2px solid var(--ink); border-radius: 26px; }
+.slide figcaption b { font-family: var(--font-display); font-weight: 600; font-size: 1.1rem; }
+.jpanel { border: 2px solid var(--ink); border-radius: 28px; box-shadow: 5px 5px 0 var(--ink); }
+.jcol { border-radius: 18px; border: 2px dashed var(--line); }
+.jnode { border-color: var(--ink); font-weight: 800; }
+.jline { height: 8px; margin-top: -4px; border-radius: 4px; }
+.jfill { border-radius: 4px; }
+.jstatus { font-weight: 800; }
+.product { border: 2px solid var(--ink); border-radius: 28px; box-shadow: 5px 5px 0 var(--ink); transition: transform .2s ease, box-shadow .2s ease; }
+.product:hover { transform: translateY(-4px) rotate(-0.8deg); box-shadow: 7px 9px 0 var(--ink); }
+.product .stage { border: 0; border-bottom: 2px solid var(--ink); border-radius: 0; box-shadow: none; transform: none; }
+.pbody h3 { font-size: 1.25rem; }
+.price { font-weight: 600; }
+.request { border: 2px solid var(--ink); border-radius: 32px; box-shadow: 6px 6px 0 var(--ink); }
+.type .card { border: 2px solid var(--line); border-radius: 18px; }
+.type .card b { font-weight: 800; }
+.type input:checked + .card { border-color: var(--ink); background: var(--stage); box-shadow: 0 3px 0 var(--ink); }
+input[type="text"], input[type="email"], input[type="number"], input[type="date"], select, textarea { border-width: 2px; border-radius: 16px; padding: 12px 14px; }
+label, .label { font-weight: 700; }
+.cond { border: 2px dashed var(--line); border-radius: 20px; }
+.result { border: 2px solid var(--ink); border-radius: 20px; }
+.stage.mini { border-radius: 20px; }
+.faq { gap: 12px; }
+.faq details, .faq details:last-child { border: 2px solid var(--ink); border-radius: 20px; padding: 16px 20px; background: var(--surface); }
+.faq details[open] { background: var(--stage); }
+.faq summary { font-weight: 800; }
+.faq summary::after { content: "+"; display: grid; place-items: center; flex: none; width: 28px; height: 28px; border-radius: 50%; background: var(--pop); color: #17110D; border: 2px solid var(--ink); font: 800 1rem/1 var(--font-body); }
+.faq details[open] summary::after { content: "\2212"; }
+.paybox { border: 2px solid var(--ink); border-radius: 20px; }
+.added { border: 2px solid var(--go); border-radius: 18px; }
+.cart-item { border-bottom: 2px dashed var(--line); }
+.ci-thumb { border: 2px solid var(--ink); border-radius: 16px; }
+.qty { border: 2px solid var(--ink); }
+.crumb { font-weight: 700; }
+.cart-btn .badge { border: 2px solid var(--ink); }
+footer { border-top: 2px dashed var(--line); }
 </head><body></style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
@@ -344,10 +429,10 @@ footer .mono { color: var(--muted); }
     <nav class="nav" aria-label="Main">
       <a href="#custom">Custom work</a>
       <a href="#work">Our work</a>
-      <a href="#process">Process</a>
-      <a href="#shop">Mahjong shop</a>
+      <a href="#process">How it works</a>
+      <a href="#shop">Mahjong</a>
       <a href="#faq">FAQ</a>
-      <a class="btn small" href="#request">Request a design</a>
+      <a class="btn small" href="#request">Start a project</a>
       <button type="button" class="theme-btn cart-btn" id="cart-btn" aria-label="Cart"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 8h14l-1.2 11.2a1.5 1.5 0 0 1-1.5 1.3H7.7a1.5 1.5 0 0 1-1.5-1.3L5 8z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/></svg><span class="badge" id="cart-count" hidden>0</span></button>
       <button type="button" class="theme-btn" id="theme-btn" aria-label="Switch to dark mode" title="Switch theme"></button>
     </nav>
@@ -357,40 +442,42 @@ footer .mono { color: var(--muted); }
 <main id="top" class="wrap">
   <div class="hero">
     <div>
-      <h1>Custom prints made to your brief. Mahjong sets made to be played.</h1>
-      <p class="lead">Forge designs and prints mascot figurines, custom NFC stands and brand pieces for clients, and sells 3D printed mahjong sets.</p>
+      <span class="kicker">Hi, we're Forge! &#128075;</span>
+      <h1>Got a quirky idea? <span class="hl">We'll print it.</span></h1>
+      <p class="lead">We turn mascots, NFC stands and brand pieces into little 3D printed things you can actually hold. We also make mahjong sets that are a joy to play.</p>
       <div class="cta">
-        <a class="btn" href="#request">Request a design</a>
-        <a class="btn ghost" href="#work">See our work</a>
-        <a class="btn ghost" href="#shop">Shop mahjong sets</a>
+        <a class="btn" href="#request">Start a project</a>
+        <a class="btn ghost" href="#work">See what we've made</a>
+        <a class="btn ghost" href="#shop">Peek at mahjong sets</a>
       </div>
     </div>
     <div class="stage" style="--tile-back:#1E1713" role="img" aria-label="Three 3D printed mahjong tiles">
       <span class="t t1" data-tile="5"></span>
       <span class="t t2" data-tile="9"></span>
       <span class="t t3" data-tile="1"></span>
-      <span class="cap mono">0.12 mm layers</span>
+      <span class="cap mono">printed layer by layer</span><span class="sticker">Printed in Singapore!</span>
     </div>
   </div>
   <div class="specs mono">
     <span><b>PLA · PETG · resin</b></span>
-    <span><b>STL, 3MF, OBJ</b> accepted</span>
-    <span><b>Sketch only?</b> We can model it</span>
-    <span><b>Made to order</b></span>
+    <span><b>STL, 3MF, OBJ</b> welcome</span>
+    <span><b>Just a sketch?</b> No worries, we can model it</span>
+    <span><b>Made to order, with love</b></span>
   </div>
 
   <section id="custom">
     <div class="custom">
       <div class="intro">
-        <h2>Tell us what you need. We model it, you approve it, then we print it.</h2>
-        <p class="lead">Every custom job starts with a short brief. There is no fixed catalogue, so you can ask for a mascot figurine, an NFC stand shaped like your brand or something we have not made before.</p>
+        <span class="kicker">Custom work</span>
+        <h2>Tell us what you're dreaming up. We'll model it, you'll approve it, then we print it!</h2>
+        <p class="lead">Every custom job starts with a short, friendly brief. There is no fixed catalogue, so ask for a mascot figurine, an NFC stand shaped like your brand, or something we have never made before.</p>
         <div class="btnrow"><a class="btn" href="#request">Start a brief</a><a class="btn ghost" href="#work">See our work</a></div>
       </div>
       <div>
         <article class="svc">
           <div class="svc-body">
           <h3>Mascot figurines</h3>
-          <p>A 3D printed version of your brand's 2D mascot. Send the artwork and we model it from every angle, then print it as a figurine for desks, counters and giveaways, like the coffee bean we made for Rang Coffee.</p>
+          <p>Turn your brand's 2D mascot into a real figurine you can hold! Send the artwork and we'll model it from every angle, then print it for desks, counters and giveaways, like the cheeky coffee bean we made for Rang Coffee.</p>
           <div class="chips"><span class="chip">from 2D artwork</span><span class="chip">your brand colours</span><span class="chip">display size</span></div>
           </div>
           <a class="art link" href="#work" aria-label="See pieces we have made for clients"><svg viewBox="0 0 120 120" role="img" aria-label="Illustration of a mascot figurine on a round base">
@@ -403,12 +490,12 @@ footer .mono { color: var(--muted); }
 <circle class="p" cx="40" cy="69" r="5"/><circle class="p" cx="80" cy="69" r="5"/>
 <path d="M53 68 Q60 75 67 68" fill="none" stroke="#17110D" stroke-width="2.6" stroke-linecap="round"/>
 <ellipse class="k" cx="46" cy="96" rx="9" ry="4"/><ellipse class="k" cx="74" cy="96" rx="9" ry="4"/>
-</svg><span class="art-cta">See our work &#8594;</span></a>
+</svg><span class="art-cta">Peek at ours &#8594;</span></a>
         </article>
         <article class="svc">
           <div class="svc-body">
           <h3>Custom NFC stands</h3>
-          <p>Stands shaped like something from your brand: a pandan cake for Tiap Tiap, a sandcastle for 13 Agency, a house with tiny caps for Quiteathome. Each holds an NFC tag and opens the link you choose when tapped.</p>
+          <p>Stands shaped like something from your brand: a pandan cake for Tiap Tiap, a sandcastle for 13 Agency, a house with tiny caps for Quiteathome. Each one hides an NFC tag that opens your link with a tap.</p>
           <div class="chips"><span class="chip">shaped to your brand</span><span class="chip">keychains</span><span class="chip">NTAG213 / 215 / 216</span><span class="chip">batches</span></div>
           </div>
           <a class="art link" href="#work" aria-label="See pieces we have made for clients"><svg viewBox="0 0 120 120" role="img" aria-label="Illustration of a custom NFC stand">
@@ -419,12 +506,12 @@ footer .mono { color: var(--muted); }
 <circle class="k" cx="60" cy="38" r="15"/>
 <g fill="none" stroke="#FFA872" stroke-width="3" stroke-linecap="round"><path d="M55 33 Q60 38 55 43"/><path d="M60 30 Q68 38 60 46"/><path d="M65 27 Q76 38 65 49"/></g>
 <circle class="o" cx="52" cy="38" r="2.4"/>
-</svg><span class="art-cta">See our work &#8594;</span></a>
+</svg><span class="art-cta">Peek at ours &#8594;</span></a>
         </article>
         <article class="svc">
           <div class="svc-body">
           <h3>Brand pieces and giveaways</h3>
-          <p>Fidget clickers like the ones we made for Tiap Tiap, plus trophies, table signs and keychains for events and shops, printed in batches with consistent colour.</p>
+          <p>Fidget clickers like the ones we made for Tiap Tiap, plus trophies, table signs and keychains for events and shops. Printed in batches with matching colours.</p>
           <div class="chips"><span class="chip">fidget clickers</span><span class="chip">batches</span><span class="chip">matched colours</span></div>
           </div>
           <a class="art link" href="#work" aria-label="See pieces we have made for clients"><svg viewBox="0 0 120 120" role="img" aria-label="Illustration of a fidget clicker and a keychain">
@@ -435,12 +522,12 @@ footer .mono { color: var(--muted); }
 <path d="M90 33 L90 50" stroke="#17110D" stroke-width="3" stroke-linecap="round"/>
 <rect class="o" x="74" y="50" width="32" height="44" rx="9"/><circle style="fill:var(--art-bg)" cx="90" cy="62" r="4.2"/>
 <path class="c" d="M80 78 L100 78 L100 82 L80 82 Z M80 85 L94 85 L94 89 L80 89 Z"/>
-</svg><span class="art-cta">See our work &#8594;</span></a>
+</svg><span class="art-cta">Peek at ours &#8594;</span></a>
         </article>
         <article class="svc">
           <div class="svc-body">
           <h3>One-offs and replacement parts</h3>
-          <p>Send a broken part, a photo or a rough sketch. We can measure, model and print a replacement or a new version.</p>
+          <p>Broken part? Photo? Napkin sketch? Send it over and we'll measure, model and print a replacement or a brand new version.</p>
           <div class="chips"><span class="chip">from a sketch</span><span class="chip">from a sample</span></div>
           </div>
           <a class="art link" href="#work" aria-label="See pieces we have made for clients"><svg viewBox="0 0 120 120" role="img" aria-label="Illustration of a broken gear and its replacement">
@@ -450,7 +537,7 @@ footer .mono { color: var(--muted); }
 <use href="#gear" x="70" y="38" width="48" height="48" style="color:#FF7420"/>
 <rect class="k" x="26" y="96" width="68" height="7" rx="2"/>
 <g stroke="#FFFBF7" stroke-width="1.4"><line x1="34" x2="34" y1="96" y2="100"/><line x1="44" x2="44" y1="96" y2="101"/><line x1="54" x2="54" y1="96" y2="100"/><line x1="64" x2="64" y1="96" y2="101"/><line x1="74" x2="74" y1="96" y2="100"/><line x1="84" x2="84" y1="96" y2="101"/></g>
-</svg><span class="art-cta">See our work &#8594;</span></a>
+</svg><span class="art-cta">Peek at ours &#8594;</span></a>
         </article>
       </div>
     </div>
@@ -459,8 +546,9 @@ footer .mono { color: var(--muted); }
   <section id="work">
     <div class="work-head">
       <div class="work-title">
-        <h2>Pieces we have made for clients</h2>
-        <p class="lead">Previous works with satisfied customers. Check more out on our Instagram.</p>
+        <span class="kicker">Our work</span>
+        <h2>Things we've made for lovely clients</h2>
+        <p class="lead">Previous works with happy customers. There is lots more on our Instagram!</p>
       </div>
       <div class="work-ctrl">
         <button type="button" class="arrow" id="work-prev" aria-label="Previous project">&#8592;</button>
@@ -473,8 +561,9 @@ footer .mono { color: var(--muted); }
 
   <section id="process">
     <div class="process-head">
-      <h2>From brief to box</h2>
-      <p class="lead">You know the price and the timeline before we start, and you see the model before we print it.</p>
+      <span class="kicker">How it works</span>
+      <h2>From idea to a box at your door</h2>
+      <p class="lead">No surprises! You know the price and timeline before we start, and you see the model before we print it.</p>
     </div>
     <div class="journey" id="journey">
       <div class="jtop">
@@ -495,8 +584,9 @@ footer .mono { color: var(--muted); }
 
   <section id="shop">
     <div class="shop-head">
-      <h2>3D printed mahjong sets</h2>
-      <p class="lead">Open one of our two ready-made sets to see it and add it to your cart, or design your own theme or tiles.</p>
+      <span class="kicker">Mahjong shop</span>
+      <h2>Mahjong sets you'll want to show off</h2>
+      <p class="lead">Take a peek at our two ready-made sets and add one to your cart, or dream up your own theme or tiles.</p>
     </div>
     <div class="grid" id="product-grid"></div>
     <p class="note">Tile art on these cards is an illustration. Ready-made sets are ordered from their own page. Custom sets and tiles go through the request form below.</p>
@@ -505,13 +595,14 @@ footer .mono { color: var(--muted); }
   <section id="request">
     <div class="request">
       <div class="intro">
-        <h2>Request a design or order a set</h2>
-        <p class="lead">Fill in what you know. Rough is fine. We use the brief to prepare your quote.</p>
-        <p class="mono" style="color:var(--muted)">Prefer to message us directly?<br><span class="addr" data-email></span><br><a class="ig" href="https://www.instagram.com/forge.customs.sg" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg> @forge.customs.sg</a></p>
+        <span class="kicker">Say hello</span>
+        <h2>Tell us your idea!</h2>
+        <p class="lead">Fill in what you know. Rough is totally fine, we'll work out the details together and send you a quote.</p>
+        <p class="mono" style="color:var(--muted)">Prefer to just say hi?<br><span class="addr" data-email></span><br><a class="ig" href="https://www.instagram.com/forge.customs.sg" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg> @forge.customs.sg</a></p>
       </div>
       <form id="brief-form" novalidate>
         <fieldset>
-          <legend>What do you need?</legend>
+          <legend>What are we making?</legend>
           <div class="types" id="types"></div>
         </fieldset>
 
@@ -528,7 +619,7 @@ footer .mono { color: var(--muted); }
         </fieldset>
 
         <fieldset>
-          <legend>About the piece</legend>
+          <legend>About your idea</legend>
           <div class="field">
             <label for="f-desc">Describe it</label>
             <textarea id="f-desc" name="Description"></textarea>
@@ -595,7 +686,7 @@ footer .mono { color: var(--muted); }
             <select id="f-budget" name="Budget"><option>Not sure yet</option><option>Under $50</option><option>$50 to $150</option><option>$150 to $500</option><option>$500 or more</option></select></div>
         </fieldset>
 
-        <div class="sendrow"><button class="btn" type="submit" id="submit-btn">Send my brief</button><span class="hint">We only use your details to reply about your brief.</span></div>
+        <div class="sendrow"><button class="btn" type="submit" id="submit-btn">Send it over!</button><span class="hint">We only use your details to reply about your brief.</span></div>
 
         <div class="result" id="result" hidden aria-live="polite">
           <h3 id="result-title">Your brief</h3>
@@ -612,13 +703,14 @@ footer .mono { color: var(--muted); }
   </section>
 
   <section id="faq">
-    <h2>Questions</h2>
+    <span class="kicker">FAQ</span>
+    <h2>Questions we hear a lot</h2>
     <div class="faq">
-      <details><summary>Which materials do you print in?</summary><p>PLA and PETG for most pieces, and resin for small, detailed parts. We recommend one when we quote, based on how the piece will be used.</p></details>
-      <details><summary>Can I send my own 3D model?</summary><p>Yes. We accept STL, 3MF and OBJ files. If you only have a sketch or photos, we can model it for you.</p></details>
-      <details><summary>How long does a job take?</summary><p>Your quote includes a timeline. Larger figurines take longer than stands and small parts, and a deadline in your brief helps us plan.</p></details>
-      <details><summary>Can I change the design after I see the model?</summary><p>Yes. You approve the model before printing, and the number of revision rounds is stated in your quote.</p></details>
-      <details><summary>How do I pay for a mahjong set?</summary><p>Send the order request and we confirm the price, colours and delivery with you before you pay.</p></details>
+      <details><summary>Which materials do you print in?</summary><p>PLA and PETG for most pieces, and resin for small, detailed parts. We'll suggest the best one when we quote, based on how your piece will be used.</p></details>
+      <details><summary>Can I send my own 3D model?</summary><p>Yes please! We accept STL, 3MF and OBJ files. If you only have a sketch or some photos, we'll model it for you.</p></details>
+      <details><summary>How long does a job take?</summary><p>Your quote comes with a timeline. Bigger figurines take longer than stands and small parts, and a deadline in your brief helps us plan.</p></details>
+      <details><summary>Can I change the design after I see the model?</summary><p>Of course. You approve the model before we print anything, and your quote says how many rounds of changes are included.</p></details>
+      <details><summary>How do I pay for a mahjong set?</summary><p>Ready-made sets go in your cart, and we confirm the total and delivery with you before you pay by PayNow. Custom sets start with a quick request form.</p></details>
     </div>
   </section>
 </main>
@@ -633,7 +725,7 @@ footer .mono { color: var(--muted); }
   </span>
   <span class="mono" data-email></span>
   <a class="ig mono" href="https://www.instagram.com/forge.customs.sg" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4.2"/><circle cx="17.3" cy="6.7" r="1" fill="currentColor" stroke="none"/></svg> @forge.customs.sg</a>
-  <span class="mono">Custom 3D prints and mahjong sets</span>
+  <span class="mono">Custom 3D prints and mahjong sets, made with love in Singapore</span>
 </footer>
 
 <script>
@@ -645,7 +737,7 @@ const CONFIG = {
   // Briefs are sent to your email by Web3Forms (free). Get an access key at web3forms.com
   // by entering the email above, then paste it here. Until then the form offers the
   // visitor an "Email us this brief" button instead.
-  accessKey: '2aeee213-42bd-4bce-b1e0-61ee61bcf0b6',
+  accessKey: '',
   endpoint: 'https://api.web3forms.com/submit',
   // PayNow details shown to the customer after they place an order. Fill these in once you have
   // a PayNow-enabled business account. qr is an image URL or data: URL of your PayNow QR code.
@@ -673,7 +765,7 @@ function unitPrice(p, size) { return (p.prices && p.prices[size]) || null; }
 function lowPrice(p) { const v = SIZES.map(function (z) { return unitPrice(p, z.id); }).filter(Boolean); return v.length ? Math.min.apply(null, v) : null; }
 const SET_DETAILS = [
   '3D printed to order in Singapore',
-  'Want a change, such as different tile colours? Tell us in the note',
+  'Want a tweak, like different tile colours? Just tell us in the note',
   'We confirm the total and delivery with you before you pay'
 ];
 const FACES = {
@@ -715,9 +807,9 @@ const WORK = [
   ] }
 ];
 const TYPES = {
-  mascot:  { label: 'Mascot figurine', hint: '3D version of your 2D mascot', ph: 'Tell us about the mascot, where the figurine will go and the size you want.' },
-  nfc:     { label: 'NFC stand', hint: 'Shaped to your brand', ph: 'Describe the stand: what shape it should be, where it sits and how many you need.' },
-  mahjong: { label: 'Mahjong set', hint: 'Order a set or custom tiles', ph: 'Anything else about your set, such as engraving text or delivery notes.' },
+  mascot:  { label: 'Mascot figurine', hint: 'Your 2D mascot, in 3D', ph: 'Tell us about the mascot, where the figurine will go and the size you want.' },
+  nfc:     { label: 'NFC stand', hint: 'Shaped like your brand', ph: 'Describe the stand: what shape it should be, where it sits and how many you need.' },
+  mahjong: { label: 'Mahjong set', hint: 'Custom sets or tiles', ph: 'Anything else about your set, such as engraving text or delivery notes.' },
   other:   { label: 'Something else', hint: 'Fidget clickers, giveaways, parts', ph: 'Describe the piece and what it should do.' }
 };
 
@@ -985,7 +1077,7 @@ $('#brief-form').addEventListener('submit', function (e) {
       }
     }).catch(function () {
       fallback('We could not send your brief from here.');
-    }).then(function () { btn.disabled = false; btn.textContent = 'Send my brief'; });
+    }).then(function () { btn.disabled = false; btn.textContent = 'Send it over!'; });
   }
   res.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 });
@@ -1059,14 +1151,14 @@ function renderWork() {
 
 /* ---- Brief to box tracker ---- */
 const STEPS = [
-  { short: 'Brief', title: 'Send a brief', text: 'Describe the piece you want. Add the size, your deadline and any reference pictures or links.',
-    you: 'Fill in the request form with what you know. Rough is fine.', we: 'Read your brief and ask questions if anything is unclear.', get: 'A reply from us about your piece.', cta: ['Start a brief', '#request'] },
-  { short: 'Quote', title: 'Get a quote', text: 'We reply with a price, a material and a timeline for the job, so you know what to expect before we start.',
-    you: 'Check the quote and tell us to go ahead.', we: 'Choose the material, work out the price and set a timeline.', get: 'A written quote with price, material and timeline.' },
-  { short: 'Approve', title: 'Approve the model', text: 'You see renders of the 3D model and ask for changes before anything is printed.',
-    you: 'Review the renders and request changes.', we: 'Model your piece in 3D and update it after your feedback.', get: 'A 3D model you have signed off.' },
-  { short: 'Print', title: 'Print and ship', text: 'We print, finish and pack the piece, then send it to you or arrange pickup.',
-    you: 'Receive your piece or collect it from us.', we: 'Print, finish and pack your order.', get: 'Your finished piece, ready to use.', cta: ['See pieces we have made', '#work'] }
+  { short: 'Brief', title: 'Say hi and send a brief', text: 'Tell us about the piece you have in mind. Size, deadline and reference pictures or links all help, but rough is fine!',
+    you: 'Fill in the request form with whatever you know.', we: 'Read your brief and ask questions if anything is unclear.', get: 'A friendly reply from us about your piece.', cta: ['Start a brief', '#request'] },
+  { short: 'Quote', title: 'Get your quote', text: 'We reply with a price, a material and a timeline, so you know exactly what to expect before we start.',
+    you: 'Check the quote and tell us to go ahead.', we: 'Pick the material, work out the price and set a timeline.', get: 'A written quote with price, material and timeline.' },
+  { short: 'Approve', title: 'Approve the model', text: 'You see renders of the 3D model and ask for changes before anything gets printed.',
+    you: 'Look over the renders and tell us what to tweak.', we: 'Model your piece in 3D and update it after your feedback.', get: 'A 3D model you have signed off.' },
+  { short: 'Print', title: 'We print and pack it', text: 'We print, finish and pack your piece with care, then send it to you or arrange a pickup.',
+    you: 'Receive your piece or collect it from us.', we: 'Print, finish and pack your order.', get: 'Your finished piece, ready to show off.', cta: ['See pieces we have made', '#work'] }
 ];
 (function () {
   let cur = 0, timer = null;
@@ -1084,7 +1176,7 @@ const STEPS = [
       if (i === cur) b.setAttribute('aria-current', 'step'); else b.removeAttribute('aria-current');
     });
     fill.style.width = (cur / (STEPS.length - 1) * 100) + '%';
-    status.textContent = 'Step ' + (cur + 1) + ' of ' + STEPS.length + ' \u00b7 ' + Math.round((cur + 1) / STEPS.length * 100) + '% of the way to your box';
+    status.textContent = 'Step ' + (cur + 1) + ' of ' + STEPS.length + ' \u00b7 ' + Math.round((cur + 1) / STEPS.length * 100) + '% of the way to your box!';
     panel.innerHTML = '<h3>' + esc(st.title) + '</h3><p class="lead">' + esc(st.text) + '</p>' +
       '<div class="jcols"><div class="jcol"><b>You</b><span>' + esc(st.you) + '</span></div><div class="jcol"><b>We</b><span>' + esc(st.we) + '</span></div><div class="jcol"><b>You get</b><span>' + esc(st.get) + '</span></div></div>' +
       (st.cta ? '<a class="btn small" href="' + st.cta[1] + '">' + esc(st.cta[0]) + '</a>' : '');
@@ -1185,7 +1277,7 @@ function renderCart() {
   const crumb = '<a class="crumb" href="#shop">&larr; Keep browsing</a>';
   if (!CART.length && LAST_ORDER) { v.innerHTML = crumb + '<div class="cartpage">' + LAST_ORDER + '</div>'; return; }
   if (!CART.length) {
-    v.innerHTML = crumb + '<div class="cartpage"><div class="empty"><h1>Your cart is empty</h1><p class="lead">Pick a ready-made mahjong set to get started.</p><a class="btn" href="#shop">See the sets</a></div></div>';
+    v.innerHTML = crumb + '<div class="cartpage"><div class="empty"><h1>Your cart is looking a bit empty</h1><p class="lead">Pop a mahjong set in and we will take it from there.</p><a class="btn" href="#shop">See the sets</a></div></div>';
     return;
   }
   v.innerHTML = crumb + '<div class="cartpage"><h1>Your cart</h1><div class="cart-layout">' +
@@ -1202,7 +1294,7 @@ function renderCart() {
     '<div class="field"><label for="o-notes">Anything else? (optional)</label><textarea id="o-notes" rows="2" style="min-height:70px"></textarea></div>' +
     '<input type="checkbox" id="o-bot" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;opacity:0;height:0;width:0">' +
     '<div class="paybox"><h3>Pay with ' + payLogo() + '</h3><p class="hint" style="margin:0">Place your order and we reply with the total and PayNow details. Your order is confirmed once we receive your payment.</p></div>' +
-    '<div class="sendrow"><button class="btn" type="submit" id="o-submit">Place order</button></div>' +
+    '<div class="sendrow"><button class="btn" type="submit" id="o-submit">Place my order</button></div>' +
     '<div class="err" id="o-fail" aria-live="polite"></div></form></div></div>';
   paintItems();
 }
@@ -1261,7 +1353,7 @@ $('#view-cart').addEventListener('submit', function (e) {
   const done = function (sent) {
     const mail = 'mailto:' + CONFIG.email + '?subject=' + encodeURIComponent(subject) + '&body=' + encodeURIComponent(text + '\n\nReply to: ' + f.email);
     const html = sent
-      ? '<h1>Order received</h1><p class="lead">Thanks, ' + esc(f.name) + '. Your order reference is <b>' + esc(ref) + '</b>. We will reply to ' + esc(f.email) + ' to confirm the details.</p>' + payBlock(ref, total)
+      ? '<h1>Yay, order received!</h1><p class="lead">Thanks, ' + esc(f.name) + '. Your order reference is <b>' + esc(ref) + '</b>. We will reply to ' + esc(f.email) + ' to confirm the details.</p>' + payBlock(ref, total)
       : '<h1>One more step</h1><p class="lead">Online sending is not available right now. Press the button to email us this order, or copy it and send it to ' + esc(CONFIG.email) + '. Your reference is <b>' + esc(ref) + '</b>.</p><div class="buyrow"><a class="btn" href="' + esc(mail) + '">Email us this order</a><button type="button" class="btn ghost" id="o-copy">Copy order</button><span class="hint" id="o-copy-status" aria-live="polite"></span></div>';
     LAST_ORDER = html + '<pre class="mono" id="o-text" style="white-space:pre-wrap;margin:0">' + esc(text) + '</pre><a class="btn ghost" href="#shop" style="justify-self:start">Back to the shop</a>';
     if (sent) { CART = []; saveCart(); } 
